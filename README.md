@@ -25,3 +25,7 @@ python3 -m http.server 8080
 ```
 
 Ga daarna naar `http://localhost:8080/`. De vertaling heeft internet nodig.
+
+## Publicatie
+
+De site hoort op <https://sealink68.github.io/werkrapport/> te staan. GitHub Pages vanaf de root van `main` kon hier niet worden aangezet (de token mag die instelling niet wijzigen). Daarom publiceert `.github/workflows/pages.yml` de statische bestanden bij elke push naar `main`.
