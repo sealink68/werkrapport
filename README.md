@@ -2,7 +2,7 @@
 
 Webapp voor een dormakaba-deurtechnieker om een werkrapport in te vullen. De interface staat standaard op Nederlands; je kunt ook Frans kiezen. De antwoorden blijven in de browser bewaard tot je het rapport afrondt.
 
-Na de vragen zie je een voorbeeld. De andere taal wordt via MyMemory ingevuld (Nederlands naar Frans, of Frans naar Nederlands). Het rapport wordt naar het klembord gekopieerd en als `.txt` gedownload. Daarna worden de antwoorden gewist en opent de app ServiceMax Go (`https://go.servicemax.io`). Lukt die overgang niet vanzelf, tik op **Open ServiceMax Go** (Frans: **Ouvrir ServiceMax Go**). Met **Nieuw blanco rapport** wis je alles en begin je opnieuw.
+Na de vragen zie je een voorbeeld. De andere taal wordt via MyMemory ingevuld (Nederlands naar Frans, of Frans naar Nederlands). Het rapport wordt naar het klembord gekopieerd en als `.txt` gedownload. Daarna worden de antwoorden gewist en opent de app ServiceMax Go (`https://go.servicemax.io`). Lukt die overgang niet vanzelf, tik op **Open ServiceMax Go** (Frans: **Ouvrir ServiceMax Go**). Kom je terug, dan begint een leeg rapport in dezelfde taal, niet het voltooide scherm. Met **Nieuw blanco rapport** wis je alles en begin je opnieuw.
 
 Er is geen build-stap. Het zijn gewone statische bestanden: `index.html`, `css/style.css` en `js/app.js`.
 

@@ -110,15 +110,23 @@ function copyText(s){function fb(){var ta=document.createElement("textarea");ta.
 function download(s){var b=new Blob([s.replace(/\n/g,"\r\n")],{type:"text/plain;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
  a.href=u;a.download=t().file;a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u)},8000)}
 function clearAnswers(){S.ans=[];for(var i=0;i<N;i++)S.ans[i]="";S.step=0;trCache={};trVals=[];save()}
+var handedOff=false;
+function markHandoff(){handedOff=true;S.ans=[];for(var i=0;i<N;i++)S.ans[i]="";S.step=0;result="";trCache={};trVals=[];lastFail=false;lastErr="";trRun++;save()}
+function showFresh(){if(!handedOff||S.view!=="d")return;S.view="q";render(1)}
+function handoffReplace(){if(handedOff)return;markHandoff();S.view="q";render(1);location.replace(GO)}
 function complete(){var s=result;
  // Start the download in this tap, before any navigation. Clipboard needs the same gesture.
  var p=copyText(s);download(s);clearAnswers();
- p.then(function(ok){copied=ok;S.view="d";render(1);setTimeout(function(){location.href=GO},1000)})}
+ p.then(function(ok){copied=ok;S.view="d";render(1);setTimeout(handoffReplace,1000)})}
 function doneView(){var x=t();
  $("card").innerHTML='<div class="center"><div class="check">✓</div><h2 class="q">'+x.ok+'</h2><p style="color:#64748b">'+x.okp+' <b>'+esc(x.file)+'</b>.</p>'+
  (copied?'':'<p class="note">⚠️ '+x.copyFail+'</p>')+
  '<div class="btns"><button class="btn sec" id="cp">'+x.copyAgain+'</button><button class="btn sec" id="dl">'+x.dl+'</button></div>'+
  '<div class="btns"><a class="btn pri" id="go" href="'+GO+'">'+esc(x.go)+'</a></div></div>';
- $("cp").onclick=function(){copyText(result)};$("dl").onclick=function(){download(result)}}
+ $("cp").onclick=function(){copyText(result)};$("dl").onclick=function(){download(result)};
+ $("go").onclick=function(){markHandoff()}}
+window.addEventListener("pagehide",showFresh);
+window.addEventListener("pageshow",function(e){if(e.persisted)showFresh()});
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden"||document.visibilityState==="visible")showFresh()});
 [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.onclick=function(){if(S.view==="d")S.view="q";S.lang=b.dataset.l;ls("wr_lang",S.lang);render(1)}});
 render(1);
