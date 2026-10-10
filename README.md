@@ -28,4 +28,12 @@ Ga daarna naar `http://localhost:8080/`. De vertaling heeft internet nodig.
 
 ## Publicatie
 
-De site hoort op <https://sealink68.github.io/werkrapport/> te staan. GitHub Pages vanaf de root van `main` kon hier niet worden aangezet (de token mag die instelling niet wijzigen). Daarom publiceert `.github/workflows/pages.yml` de statische bestanden bij elke push naar `main`.
+De bestanden staan op `main`. Het adres wordt <https://sealink68.github.io/werkrapport/>.
+
+Pages kon niet vanuit deze omgeving worden aangezet (de token mag de site niet aanmaken). Zet het één keer zelf aan:
+
+1. Open de repository op GitHub.
+2. Ga naar **Settings → Pages**.
+3. Kies bij **Build and deployment** de bron **GitHub Actions**.
+
+Daarna publiceert `.github/workflows/pages.yml` de root bij elke push naar `main`. Je kunt de workflow ook met de hand starten via **Actions → Deploy GitHub Pages**.
