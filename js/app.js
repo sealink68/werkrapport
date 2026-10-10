@@ -8,12 +8,12 @@ fr:["Numéro de dossier:","Description de l’état lors de mon arrivée:","Caus
 var T={
 nl:{title:"Werkrapport",prev:"Vorige",next:"Volgende",q:"Vraag {a} van {b}",preview:"Voorbeeld",done:"Voltooid",edit:"Bewerken",
  back:"Terug naar vragen",translating:"Bezig met vertalen…",ok:"Rapport voltooid!",okp:"Het rapport is gekopieerd naar het klembord en gedownload als",
- copyFail:"Kopiëren naar klembord mislukt – gebruik het gedownloade bestand.",newr:"Nieuw rapport",go:"Open ServiceMax Go",start:"Kies je taal",startp:"Choisissez votre langue",
+ copyFail:"Kopiëren naar klembord mislukt – gebruik het gedownloade bestand.",newr:"Nieuw rapport",start:"Kies je taal",startp:"Choisissez votre langue",
  hint:"Druk op Enter voor de volgende vraag",sum:"Overzicht",file:"Werkrapport.txt",untr:"[niet vertaald]",
  trfail:"Vertaling (deels) mislukt – originele tekst gebruikt.",empty:"(leeg)",copyAgain:"Opnieuw kopiëren",dl:"Opnieuw downloaden",retr:"Opnieuw vertalen",reset:"Nieuw blanco rapport",conf:"Alle antwoorden wissen en een nieuw blanco rapport starten?",trerr:"Vertaling mislukt – controleer je internetverbinding en tik op ‘Opnieuw vertalen’. De originele tekst is gebruikt en gemarkeerd.",trl:"Vertaling"},
 fr:{title:"Rapport de travail",prev:"Précédent",next:"Suivant",q:"Question {a} sur {b}",preview:"Aperçu",done:"Terminé",edit:"Modifier",
  back:"Retour aux questions",translating:"Traduction en cours…",ok:"Rapport terminé !",okp:"Le rapport a été copié dans le presse-papiers et téléchargé sous",
- copyFail:"Échec de la copie – utilisez le fichier téléchargé.",newr:"Nouveau rapport",go:"Ouvrir ServiceMax Go",start:"Choisissez votre langue",startp:"Kies je taal",
+ copyFail:"Échec de la copie – utilisez le fichier téléchargé.",newr:"Nouveau rapport",start:"Choisissez votre langue",startp:"Kies je taal",
  hint:"Appuyez sur Entrée pour la question suivante",sum:"Résumé",file:"Rapport de travail.txt",untr:"[non traduit]",
  trfail:"",empty:"(vide)",copyAgain:"Copier à nouveau",dl:"Télécharger à nouveau",retr:"Retraduire",reset:"Nouveau rapport vierge",conf:"Effacer toutes les réponses et commencer un nouveau rapport vierge ?",trerr:"La traduction a échoué – vérifiez votre connexion internet et touchez « Retraduire ». Le texte original a été utilisé et marqué.",trl:"Traduction"}};
 var DISC="Automatische vertaling – gelieve na te kijken / Traduction automatique – veuillez vérifier";
@@ -35,7 +35,7 @@ function hdr(){var L=S.lang||"nl";$("title").textContent=t().title;document.titl
 function anim(dir){var c=$("card");c.classList.remove("slide-in-r","slide-in-l");void c.offsetWidth;c.classList.add(dir<0?"slide-in-l":"slide-in-r")}
 function render(dir){hdr();$("top").innerHTML="";
  if(!S.lang)return startView();
- if(S.view==="q")qView();else if(S.view==="p")previewView();else doneView();
+ if(S.view==="p")previewView();else qView();
  anim(dir||1)}
 function startView(){$("card").innerHTML='<div class="start"><h2>Kies je taal</h2><p>Choisissez votre langue</p>'+
  '<button class="btn pri big" data-l="nl">🇧🇪 Nederlands<small>Werkrapport · met Franse vertaling</small></button>'+
@@ -109,24 +109,13 @@ function copyText(s){function fb(){var ta=document.createElement("textarea");ta.
  return Promise.resolve(fb())}
 function download(s){var b=new Blob([s.replace(/\n/g,"\r\n")],{type:"text/plain;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
  a.href=u;a.download=t().file;a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u)},8000)}
-function clearAnswers(){S.ans=[];for(var i=0;i<N;i++)S.ans[i]="";S.step=0;trCache={};trVals=[];save()}
-var handedOff=false;
-function markHandoff(){handedOff=true;S.ans=[];for(var i=0;i<N;i++)S.ans[i]="";S.step=0;result="";trCache={};trVals=[];lastFail=false;lastErr="";trRun++;save()}
-function showFresh(){if(!handedOff||S.view!=="d")return;S.view="q";render(1)}
-function handoffReplace(){if(handedOff)return;markHandoff();S.view="q";render(1);location.replace(GO)}
+function freshStart(){S.ans=[];for(var i=0;i<N;i++)S.ans[i]="";S.step=0;S.view="q";result="";trCache={};trVals=[];lastFail=false;lastErr="";trRun++;save();render(1)}
+function openGo(){var w=null;try{w=window.open(GO,"_blank")}catch(e){w=null}
+ if(w)return;
+ var a=document.createElement("a");a.href=GO;a.target="_blank";a.rel="noopener";a.style.display="none";
+ document.body.appendChild(a);a.click();setTimeout(function(){if(a.parentNode)a.parentNode.removeChild(a)},0)}
 function complete(){var s=result;
- // Start the download in this tap, before any navigation. Clipboard needs the same gesture.
- var p=copyText(s);download(s);clearAnswers();
- p.then(function(ok){copied=ok;S.view="d";render(1);setTimeout(handoffReplace,1000)})}
-function doneView(){var x=t();
- $("card").innerHTML='<div class="center"><div class="check">✓</div><h2 class="q">'+x.ok+'</h2><p style="color:#64748b">'+x.okp+' <b>'+esc(x.file)+'</b>.</p>'+
- (copied?'':'<p class="note">⚠️ '+x.copyFail+'</p>')+
- '<div class="btns"><button class="btn sec" id="cp">'+x.copyAgain+'</button><button class="btn sec" id="dl">'+x.dl+'</button></div>'+
- '<div class="btns"><a class="btn pri" id="go" href="'+GO+'">'+esc(x.go)+'</a></div></div>';
- $("cp").onclick=function(){copyText(result)};$("dl").onclick=function(){download(result)};
- $("go").onclick=function(){markHandoff()}}
-window.addEventListener("pagehide",showFresh);
-window.addEventListener("pageshow",function(e){if(e.persisted)showFresh()});
-document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden"||document.visibilityState==="visible")showFresh()});
+ // Same tap: download first, then clipboard, then leave this page on a blank report and hand off beside it.
+ download(s);copyText(s);freshStart();openGo()}
 [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.onclick=function(){if(S.view==="d")S.view="q";S.lang=b.dataset.l;ls("wr_lang",S.lang);render(1)}});
 render(1);
