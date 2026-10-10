@@ -8,15 +8,16 @@ fr:["Numéro de dossier:","Description de l’état lors de mon arrivée:","Caus
 var T={
 nl:{title:"Werkrapport",prev:"Vorige",next:"Volgende",q:"Vraag {a} van {b}",preview:"Voorbeeld",done:"Voltooid",edit:"Bewerken",
  back:"Terug naar vragen",translating:"Bezig met vertalen…",ok:"Rapport voltooid!",okp:"Het rapport is gekopieerd naar het klembord en gedownload als",
- copyFail:"Kopiëren naar klembord mislukt – gebruik het gedownloade bestand.",newr:"Nieuw rapport",start:"Kies je taal",startp:"Choisissez votre langue",
+ copyFail:"Kopiëren naar klembord mislukt – gebruik het gedownloade bestand.",newr:"Nieuw rapport",go:"Open ServiceMax Go",start:"Kies je taal",startp:"Choisissez votre langue",
  hint:"Druk op Enter voor de volgende vraag",sum:"Overzicht",file:"Werkrapport.txt",untr:"[niet vertaald]",
  trfail:"Vertaling (deels) mislukt – originele tekst gebruikt.",empty:"(leeg)",copyAgain:"Opnieuw kopiëren",dl:"Opnieuw downloaden",retr:"Opnieuw vertalen",reset:"Nieuw blanco rapport",conf:"Alle antwoorden wissen en een nieuw blanco rapport starten?",trerr:"Vertaling mislukt – controleer je internetverbinding en tik op ‘Opnieuw vertalen’. De originele tekst is gebruikt en gemarkeerd.",trl:"Vertaling"},
 fr:{title:"Rapport de travail",prev:"Précédent",next:"Suivant",q:"Question {a} sur {b}",preview:"Aperçu",done:"Terminé",edit:"Modifier",
  back:"Retour aux questions",translating:"Traduction en cours…",ok:"Rapport terminé !",okp:"Le rapport a été copié dans le presse-papiers et téléchargé sous",
- copyFail:"Échec de la copie – utilisez le fichier téléchargé.",newr:"Nouveau rapport",start:"Choisissez votre langue",startp:"Kies je taal",
+ copyFail:"Échec de la copie – utilisez le fichier téléchargé.",newr:"Nouveau rapport",go:"Ouvrir ServiceMax Go",start:"Choisissez votre langue",startp:"Kies je taal",
  hint:"Appuyez sur Entrée pour la question suivante",sum:"Résumé",file:"Rapport de travail.txt",untr:"[non traduit]",
  trfail:"",empty:"(vide)",copyAgain:"Copier à nouveau",dl:"Télécharger à nouveau",retr:"Retraduire",reset:"Nouveau rapport vierge",conf:"Effacer toutes les réponses et commencer un nouveau rapport vierge ?",trerr:"La traduction a échoué – vérifiez votre connexion internet et touchez « Retraduire ». Le texte original a été utilisé et marqué.",trl:"Traduction"}};
 var DISC="Automatische vertaling – gelieve na te kijken / Traduction automatique – veuillez vérifier";
+var GO="https://go.servicemax.io";
 var N=7,SINGLE={0:1,6:1};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
 var S={lang:ls("wr_lang"),step:+(ls("wr_step")||0),ans:[],view:"q"};
@@ -107,17 +108,17 @@ function copyText(s){function fb(){var ta=document.createElement("textarea");ta.
  if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(s).then(function(){return true},function(){return fb()})}
  return Promise.resolve(fb())}
 function download(s){var b=new Blob([s.replace(/\n/g,"\r\n")],{type:"text/plain;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
- a.href=u;a.download=t().file;a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u)},1500)}
+ a.href=u;a.download=t().file;a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u)},8000)}
+function clearAnswers(){S.ans=[];for(var i=0;i<N;i++)S.ans[i]="";S.step=0;trCache={};trVals=[];save()}
 function complete(){var s=result;
- // download synchronously in the click gesture; clipboard too (iOS requires user gesture)
- var p=copyText(s);download(s);
- p.then(function(ok){copied=ok;S.view="d";render(1)})}
+ // Start the download in this tap, before any navigation. Clipboard needs the same gesture.
+ var p=copyText(s);download(s);clearAnswers();
+ p.then(function(ok){copied=ok;S.view="d";render(1);setTimeout(function(){location.href=GO},1000)})}
 function doneView(){var x=t();
  $("card").innerHTML='<div class="center"><div class="check">✓</div><h2 class="q">'+x.ok+'</h2><p style="color:#64748b">'+x.okp+' <b>'+esc(x.file)+'</b>.</p>'+
  (copied?'':'<p class="note">⚠️ '+x.copyFail+'</p>')+
  '<div class="btns"><button class="btn sec" id="cp">'+x.copyAgain+'</button><button class="btn sec" id="dl">'+x.dl+'</button></div>'+
- '<div class="btns"><button class="btn pri" id="nw">+ '+x.newr+'</button></div></div>';
- $("cp").onclick=function(){copyText(result)};$("dl").onclick=function(){download(result)};
- $("nw").onclick=function(){S.ans=[];for(var i=0;i<N;i++)S.ans[i]="";S.step=0;S.view="q";result="";trCache={};save();render(1)}}
+ '<div class="btns"><a class="btn pri" id="go" href="'+GO+'">'+esc(x.go)+'</a></div></div>';
+ $("cp").onclick=function(){copyText(result)};$("dl").onclick=function(){download(result)}}
 [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.onclick=function(){if(S.view==="d")S.view="q";S.lang=b.dataset.l;ls("wr_lang",S.lang);render(1)}});
 render(1);

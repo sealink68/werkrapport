@@ -47,3 +47,4 @@ pre{white-space:pre-wrap;word-wrap:break-word;font:inherit;font-size:15px;line-h
 .tr{display:block;color:#4f46e5;font-size:14px;margin-top:4px;white-space:pre-wrap}
 .reset{display:block;width:100%;margin-top:12px;background:#fff1f2;color:#be123c;border:2px solid #fecdd3}
 .hint{font-size:13px;color:var(--mu);margin-top:8px}
+a.btn{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none}
