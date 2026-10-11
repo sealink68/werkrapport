@@ -9,13 +9,16 @@ var T={
 nl:{title:"Werkrapport",prev:"Vorige",next:"Volgende",q:"Vraag {a} van {b}",preview:"Voorbeeld",done:"Voltooid",edit:"Bewerken",
  back:"Terug naar vragen",translating:"Bezig met vertalen…",ok:"Rapport voltooid!",okp:"Het rapport is gekopieerd naar het klembord en gedownload als",
  copyFail:"Kopiëren naar klembord mislukt – gebruik het gedownloade bestand.",newr:"Nieuw rapport",start:"Kies je taal",startp:"Choisissez votre langue",
- hint:"Druk op Enter voor de volgende vraag",sum:"Overzicht",file:"Werkrapport.txt",untr:"[niet vertaald]",
+ hint:"Druk op Volgende voor de volgende vraag",hintDone:"Druk op Voorbeeld om af te werken",sum:"Overzicht",file:"Werkrapport.txt",untr:"[niet vertaald]",
  trfail:"Vertaling (deels) mislukt – originele tekst gebruikt.",empty:"(leeg)",copyAgain:"Opnieuw kopiëren",dl:"Opnieuw downloaden",retr:"Opnieuw vertalen",reset:"Nieuw blanco rapport",conf:"Alle antwoorden wissen en een nieuw blanco rapport starten?",trerr:"Vertaling mislukt – controleer je internetverbinding en tik op ‘Opnieuw vertalen’. De originele tekst is gebruikt en gemarkeerd.",trl:"Vertaling"},
 fr:{title:"Rapport de travail",prev:"Précédent",next:"Suivant",q:"Question {a} sur {b}",preview:"Aperçu",done:"Terminé",edit:"Modifier",
  back:"Retour aux questions",translating:"Traduction en cours…",ok:"Rapport terminé !",okp:"Le rapport a été copié dans le presse-papiers et téléchargé sous",
  copyFail:"Échec de la copie – utilisez le fichier téléchargé.",newr:"Nouveau rapport",start:"Choisissez votre langue",startp:"Kies je taal",
- hint:"Appuyez sur Entrée pour la question suivante",sum:"Résumé",file:"Rapport de travail.txt",untr:"[non traduit]",
+ hint:"Appuyez sur Suivant pour la question suivante",hintDone:"Appuyez sur Aperçu pour terminer",sum:"Résumé",file:"Rapport de travail.txt",untr:"[non traduit]",
  trfail:"",empty:"(vide)",copyAgain:"Copier à nouveau",dl:"Télécharger à nouveau",retr:"Retraduire",reset:"Nouveau rapport vierge",conf:"Effacer toutes les réponses et commencer un nouveau rapport vierge ?",trerr:"La traduction a échoué – vérifiez votre connexion internet et touchez « Retraduire ». Le texte original a été utilisé et marqué.",trl:"Traduction"}};
+var PH={
+nl:["Ga naar ServiceMax, kopieer het dossiernummer en plak in dit veld.","Meld de toestand van de installatie en gebreken of schade bij aankomst.","Geef aan wat de vermoedelijke of effectieve oorzaak van de storing is.","Vul in wat je gedaan hebt om de storing op te lossen.","Wat is de toestand van het systeem? 100% gebruiksklaar, beperkt opgelost, tijdelijk opgelost, buiten dienst gesteld...","Bvb. klant moet nog iets oplossen, technieker moet nog iets oplossen, er wordt een offerte opgemaakt, etc...","Hier naam of e-mailadres van verantwoordelijke."],
+fr:["Allez dans ServiceMax, copiez le numéro de dossier et collez-le dans ce champ.","Décrivez l\u2019état de l\u2019installation et les défauts ou dommages à l\u2019arrivée.","Indiquez la cause présumée ou effective de la panne.","Indiquez ce que vous avez fait pour résoudre la panne.","Quel est l\u2019état du système ? 100 % opérationnel, partiellement résolu, temporairement résolu, mis hors service...","P. ex. le client doit encore corriger quelque chose, le technicien doit encore intervenir, un devis est établi, etc.","Ici, le nom ou l\u2019adresse e-mail du responsable."]};
 var DISC="Automatische vertaling – gelieve na te kijken / Traduction automatique – veuillez vérifier";
 var GO="https://go.servicemax.io";
 var N=7,SINGLE={0:1,6:1};
@@ -58,10 +61,10 @@ function setLang(l){S.lang=l;ls("wr_lang",l);render(1)}
 function qView(){var i=S.step,L=S.lang,x=t();
  $("top").innerHTML='<div class="prog"><span>'+x.q.replace("{a}",i+1).replace("{b}",N)+'</span><span>'+Math.round((i+1)/N*100)+'%</span></div><div class="bar"><i style="width:'+((i+1)/N*100)+'%"></i></div>';
  var f=SINGLE[i]?'<input id="inp" type="text" autocomplete="off" enterkeyhint="'+(i===N-1?'done':'next')+'"'+(i===0?' inputmode="text" autocapitalize="characters"':' autocapitalize="words"')+'>':'<textarea id="inp" autocapitalize="sentences"></textarea>';
- $("card").innerHTML='<div class="num">'+(i+1)+'</div><h2 class="q">'+esc(Q[L][i])+'</h2>'+f+(SINGLE[i]?'<div class="hint">'+x.hint+'</div>':'')+
+ $("card").innerHTML='<div class="num">'+(i+1)+'</div><h2 class="q">'+esc(Q[L][i])+'</h2>'+f+'<div class="hint">'+esc(i===N-1?x.hintDone:x.hint)+'</div>'+
  '<div class="btns"><button class="btn sec" id="prev"'+(i===0?' disabled':'')+'>‹ '+x.prev+'</button>'+
  (i===N-1?'<button class="btn pri" id="next">'+x.preview+'</button>':'<button class="btn pri" id="next">'+x.next+' ›</button>')+'</div>';
- var inp=$("inp");inp.value=S.ans[i];
+ var inp=$("inp");inp.placeholder=PH[L][i];inp.value=S.ans[i];
  inp.oninput=function(){S.ans[i]=inp.value;save()};
  if(SINGLE[i])inp.onkeydown=function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();go(1)}};
  $("prev").onclick=function(){go(-1)};$("next").onclick=function(){go(1)};
