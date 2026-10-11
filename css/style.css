@@ -20,7 +20,8 @@ header h1{font-size:26px;margin:0;font-weight:800;letter-spacing:-.5px}
 input,textarea{width:100%;font:inherit;font-size:17px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:14px;background:#f8fafc;color:var(--tx);outline:none;transition:border .2s,box-shadow .2s}
 input:focus,textarea:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(79,70,229,.15);background:#fff}
 input::placeholder,textarea::placeholder{color:#94a3b8;opacity:1}
-textarea{min-height:42vh;resize:vertical;line-height:1.45}
+textarea{min-height:52px;resize:none;overflow:hidden;line-height:1.45;font-size:17px}
+textarea::placeholder{font-size:14px;line-height:1.35}
 .btns{display:flex;gap:10px;margin-top:16px}
 .btn{flex:1;border:0;border-radius:14px;font-size:17px;font-weight:700;padding:16px;min-height:54px;cursor:pointer;transition:transform .1s,opacity .2s}
 .btn:active{transform:scale(.97)}.btn:disabled{opacity:.4}

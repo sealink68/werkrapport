@@ -58,14 +58,19 @@ function startView(){$("card").innerHTML='<div class="start"><h2>Kies je taal</h
  '<button class="btn sec big" data-l="fr">🇫🇷 Français<small>Rapport de travail</small></button></div>';
  [].forEach.call($("card").querySelectorAll("[data-l]"),function(b){b.onclick=function(){setLang(b.dataset.l)}});resetBtn()}
 function setLang(l){S.lang=l;ls("wr_lang",l);render(1)}
+function fit(el){if(!el)return;el.style.height="auto";
+ var extra=el.offsetHeight-el.clientHeight;
+ el.style.height=(el.scrollHeight+extra)+"px";
+ if(el.scrollHeight>el.clientHeight)el.style.height=(el.offsetHeight+(el.scrollHeight-el.clientHeight))+"px"}
 function qView(){var i=S.step,L=S.lang,x=t();
  $("top").innerHTML='<div class="prog"><span>'+x.q.replace("{a}",i+1).replace("{b}",N)+'</span><span>'+Math.round((i+1)/N*100)+'%</span></div><div class="bar"><i style="width:'+((i+1)/N*100)+'%"></i></div>';
- var f=SINGLE[i]?'<input id="inp" type="text" autocomplete="off" enterkeyhint="'+(i===N-1?'done':'next')+'"'+(i===0?' inputmode="text" autocapitalize="characters"':' autocapitalize="words"')+'>':'<textarea id="inp" autocapitalize="sentences"></textarea>';
+ var cap=i===0?"characters":(SINGLE[i]?"words":"sentences");
+ var f='<textarea id="inp" rows="1" autocomplete="off" enterkeyhint="'+(i===N-1?"done":"next")+'" autocapitalize="'+cap+'"'+(i===0?' inputmode="text"':'')+'></textarea>';
  $("card").innerHTML='<div class="num">'+(i+1)+'</div><h2 class="q">'+esc(Q[L][i])+'</h2>'+f+'<div class="hint">'+esc(i===N-1?x.hintDone:x.hint)+'</div>'+
  '<div class="btns"><button class="btn sec" id="prev"'+(i===0?' disabled':'')+'>‹ '+x.prev+'</button>'+
  (i===N-1?'<button class="btn pri" id="next">'+x.preview+'</button>':'<button class="btn pri" id="next">'+x.next+' ›</button>')+'</div>';
- var inp=$("inp");inp.placeholder=PH[L][i];inp.value=S.ans[i];
- inp.oninput=function(){S.ans[i]=inp.value;save()};
+ var inp=$("inp");inp.placeholder=PH[L][i];inp.value=S.ans[i];fit(inp);
+ inp.oninput=function(){if(SINGLE[i])inp.value=inp.value.replace(/\n/g,"");S.ans[i]=inp.value;save();fit(inp)};
  if(SINGLE[i])inp.onkeydown=function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();go(1)}};
  $("prev").onclick=function(){go(-1)};$("next").onclick=function(){go(1)};
 if(hasAns())resetBtn();
@@ -135,4 +140,5 @@ function complete(){var s=result;
  download(s);copyText(s);freshStart();openGo()}
 [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.onclick=function(){if(S.view==="d")S.view="q";S.lang=b.dataset.l;ls("wr_lang",S.lang);render(1)}});
 $("tipx").onclick=function(){ls("wr_tip_hide",String(Date.now()+7*864e5));$("tip").hidden=true};
+window.addEventListener("resize",function(){var el=$("inp");if(el)fit(el)});
 render(1);
