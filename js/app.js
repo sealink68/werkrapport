@@ -77,6 +77,7 @@ if(hasAns())resetBtn();
  setTimeout(function(){try{inp.focus({preventScroll:true})}catch(e){}},60)}
 function go(d){var n=S.step+d;if(n<0)return;if(n>=N){S.view="p";save();render(1);return}S.step=n;save();render(d)}
 var MM="https://api.mymemory.translated.net/get";
+var PROXY="https://werkrapport-translate.sealink68.workers.dev";
 function decode(o){var tx=document.createElement("textarea");tx.innerHTML=o;return tx.value}
 function getJSON(url){return new Promise(function(res,rej){var done=false,tm=setTimeout(function(){if(!done){done=true;rej("timeout")}},12000);
  function fin(f,v){if(!done){done=true;clearTimeout(tm);f(v)}}
@@ -96,13 +97,23 @@ function translate(txt,lp){var k=lp+"|"+txt;if(trCache[k])return Promise.resolve
  .then(function(o){var r={ok:true,t:o,same:norm(o)===norm(txt)};trCache[k]=r;return r},
   function(e){lastErr=String(e);return{ok:false,t:txt}})}
 function block(L,vals){return LB[L].map(function(l,i){return l+" "+vals[i]}).join("\n")}
-function build(){var L=S.lang,O=L==="nl"?"fr":"nl",lp=L+"|"+O;
+function reportText(L,O,vals){return T[L].title+"\n\n"+block(L,S.ans)+"\n\n────────────────────\n\n"+T[O].title+"\n("+DISC+")\n\n"+block(O,vals)}
+function postProxy(from,to,items){return new Promise(function(res,rej){var done=false,tm=setTimeout(function(){if(!done){done=true;rej("timeout")}},15000);
+ function fin(f,v){if(!done){done=true;clearTimeout(tm);f(v)}}
+ var body=JSON.stringify({from:from,to:to,items:items});
+ function accept(j){if(!j||!Array.isArray(j.items)||j.items.length!==items.length)throw "length";fin(res,j.items)}
+ if(window.fetch){fetch(PROXY,{method:"POST",mode:"cors",credentials:"omit",cache:"no-store",headers:{"Content-Type":"application/json"},body:body}).then(function(r){if(!r.ok)throw "HTTP "+r.status;return r.json()}).then(function(j){try{accept(j)}catch(e){fin(rej,String(e&&e.message||e))}},function(e){fin(rej,typeof e==="string"?e:String(e&&e.message||e))})}
+ else{try{var x=new XMLHttpRequest();x.open("POST",PROXY);x.timeout=15000;x.setRequestHeader("Content-Type","application/json");x.onload=function(){if(x.status!==200){fin(rej,"HTTP "+x.status);return}try{accept(JSON.parse(x.responseText))}catch(e){fin(rej,String(e&&e.message||e))}};x.onerror=function(){fin(rej,"network")};x.ontimeout=function(){fin(rej,"timeout")};x.send(body)}catch(e){fin(rej,"xhr")}}})}
+function proxyAll(from,to,items){var out=[],i=0;function next(){if(i>=items.length)return Promise.resolve(out);var chunk=items.slice(i,i+20);i+=chunk.length;return postProxy(from,to,chunk).then(function(part){out=out.concat(part);return next()})}return next()}
+function buildMM(){var L=S.lang,O=L==="nl"?"fr":"nl",lp=L+"|"+O;
  return Promise.all(S.ans.map(function(a,i){if(i===0||!a.trim())return Promise.resolve({ok:true,t:a});
   // translate line by line to keep line breaks
   return Promise.all(a.split("\n").map(function(ln){return ln.trim()?translate(ln,lp):Promise.resolve({ok:true,t:ln})})).then(function(rs){
    var ok=rs.every(function(r){return r.ok});return{ok:ok,same:rs.some(function(r){return r.same}),t:rs.map(function(r){return r.t}).join("\n")+(ok?"":" "+T[O].untr)}})}))
  .then(function(rs){lastFail=rs.some(function(r){return!r.ok});trVals=rs.map(function(r){return r.t});
-  return T[L].title+"\n\n"+block(L,S.ans)+"\n\n────────────────────\n\n"+T[O].title+"\n("+DISC+")\n\n"+block(O,rs.map(function(r){return r.t}))})}
+  return reportText(L,O,trVals)})}
+function build(){var L=S.lang,O=L==="nl"?"fr":"nl",items=S.ans.slice(1);
+ return proxyAll(L,O,items).then(function(trs){lastFail=false;lastErr="";trVals=[S.ans[0]].concat(trs);return reportText(L,O,trVals)},function(){return buildMM()})}
 function previewView(){var x=t();result="";
  $("card").innerHTML='<h2 class="q" style="margin-bottom:8px">'+x.preview+'</h2><ul class="list">'+
   S.ans.map(function(a,i){return'<li><div><b>'+esc(LB[S.lang][i])+'</b><span>'+(a.trim()?esc(a):'<i style="color:#94a3b8">'+x.empty+'</i>')+'</span><span class="tr" id="tr'+i+'"></span></div><button class="edit" data-i="'+i+'">'+x.edit+'</button></li>'}).join("")+
