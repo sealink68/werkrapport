@@ -8,7 +8,7 @@ Er is geen build-stap. Het zijn gewone statische bestanden: `index.html`, `css/s
 
 ## Op je iPhone zetten
 
-Gebruik Safari. Alleen dan verschijnt het icoon op het beginscherm en opent de app zonder browserbalk.
+Gebruik Safari op de iPhone. Alleen dan verschijnt het icoon op het beginscherm en opent de app zonder browserbalk. Op Android: menu (⋮) → **Toevoegen aan startscherm**. Verwijder oude Werkrapport-apps.
 
 1. Open in Safari: <https://sealink68.github.io/werkrapport/>
 2. Tik op de deelknop (vierkant met een pijl omhoog).

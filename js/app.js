@@ -35,15 +35,16 @@ function hdr(){var L=S.lang||"nl";$("title").textContent=t().title;document.titl
 function isStandalone(){if(navigator.standalone===true)return true;
  try{if(window.matchMedia("(display-mode: standalone)").matches)return true}catch(e){}
  return false}
-function mobileBrowser(){var ua=navigator.userAgent||"";
+function iosDevice(){var ua=navigator.userAgent||"";
  if(/iPad|iPhone|iPod/.test(ua))return true;
- if(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)return true;
- return /Android|Mobile/i.test(ua)}
+ return navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1}
+function mobileBrowser(){if(iosDevice())return true;return /Android|webOS|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent||"")}
 function updateTip(){var el=$("tip");if(!el)return;
  var until=+ls("wr_tip_hide")||0,show=!isStandalone()&&mobileBrowser()&&Date.now()>=until;
  el.hidden=!show;if(!show)return;
- $("tiptext").textContent=S.lang==="fr"?"Astuce : ajoutez cette app à votre écran d\u2019accueil via Partager → Sur l\u2019écran d\u2019accueil. Supprimez aussi toutes les anciennes apps Rapport de travail.":"Tip: zet deze app op je beginscherm via Deel → Zet op beginscherm. Verwijder ook alle oude Werkrapport-apps.";
- var x=$("tipx");if(x)x.setAttribute("aria-label",S.lang==="fr"?"Fermer":"Sluiten")}
+ var fr=S.lang==="fr",ios=iosDevice();
+ $("tiptext").textContent=fr?(ios?"Astuce : ajoutez cette app à votre écran d\u2019accueil via Partager → Sur l\u2019écran d\u2019accueil. Supprimez aussi toutes les anciennes apps Rapport de travail.":"Astuce : ajoutez cette app à votre écran d\u2019accueil via le menu (\u22ee) → Ajouter à l\u2019écran d\u2019accueil. Supprimez aussi toutes les anciennes apps Rapport de travail."):(ios?"Tip: zet deze app op je beginscherm via Deel → Zet op beginscherm. Verwijder ook alle oude Werkrapport-apps.":"Tip: zet deze app op je beginscherm via het menu (\u22ee) → Toevoegen aan startscherm. Verwijder ook alle oude Werkrapport-apps.");
+ var x=$("tipx");if(x)x.setAttribute("aria-label",fr?"Fermer":"Sluiten")}
 function anim(dir){var c=$("card");c.classList.remove("slide-in-r","slide-in-l");void c.offsetWidth;c.classList.add(dir<0?"slide-in-l":"slide-in-r")}
 function render(dir){hdr();$("top").innerHTML="";
  if(!S.lang)return startView();
