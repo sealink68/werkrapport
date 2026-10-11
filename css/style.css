@@ -47,4 +47,8 @@ pre{white-space:pre-wrap;word-wrap:break-word;font:inherit;font-size:15px;line-h
 .tr{display:block;color:#4f46e5;font-size:14px;margin-top:4px;white-space:pre-wrap}
 .reset{display:block;width:100%;margin-top:12px;background:#fff1f2;color:#be123c;border:2px solid #fecdd3}
 .hint{font-size:13px;color:var(--mu);margin-top:8px}
+.tip{display:flex;align-items:flex-start;gap:8px;margin:0 2px 12px;padding:10px 6px 10px 12px;background:rgba(255,255,255,.94);color:var(--tx);border-radius:14px;box-shadow:0 8px 24px rgba(15,23,42,.15);font-size:13px;line-height:1.4}
+.tip[hidden]{display:none}
+.tip p{margin:0;flex:1}
+.tip button{flex:none;border:0;background:transparent;color:var(--mu);font-size:22px;line-height:1;width:36px;height:36px;padding:0;cursor:pointer;border-radius:10px}
 a.btn{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none}
