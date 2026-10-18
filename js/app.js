@@ -34,7 +34,14 @@ function save(){ls("wr_ans",JSON.stringify(S.ans));ls("wr_step",String(S.step))}
 function t(){return T[S.lang||"nl"]}
 function hdr(){var L=S.lang||"nl";$("title").textContent=t().title;document.title=t().title;document.documentElement.lang=L;
  [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.classList.toggle("on",b.dataset.l===S.lang)});
- $("seg").style.visibility=S.lang?"visible":"hidden";updateTip()}
+ $("seg").style.visibility=S.lang?"visible":"hidden";updateTip();fitBrand()}
+// dormakaba logo: full word mark only when it fits next to the title, else just the red symbol.
+function fitBrand(){var h=document.querySelector("header"),b=h&&h.querySelector(".brand"),t=$("title"),r=$("seg");if(!b||!t||!r)return;
+ h.classList.remove("bc","bt","bt2","bt3");t.style.whiteSpace="nowrap";
+ var g=function(e){return parseFloat(getComputedStyle(e).columnGap)||0},room=h.clientWidth-r.offsetWidth-g(h),over=function(){return b.offsetWidth+g(b.parentNode)+t.scrollWidth>room+.5};
+ if(over())h.classList.add("bc");var k=["bt","bt2","bt3"],i=0;for(;i<k.length&&over();i++){if(i)h.classList.remove(k[i-1]);h.classList.add(k[i])}
+ if(over()&&/\s/.test(t.textContent))h.classList.remove(k[i-1]); // smaller title only if that keeps it on one line; else wrap as before
+ t.style.whiteSpace=""}
 function isStandalone(){if(navigator.standalone===true)return true;
  try{if(window.matchMedia("(display-mode: standalone)").matches)return true}catch(e){}
  return false}
@@ -151,5 +158,5 @@ function complete(){var s=result;
  download(s);copyText(s);freshStart();openGo()}
 [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.onclick=function(){if(S.view==="d")S.view="q";S.lang=b.dataset.l;ls("wr_lang",S.lang);render(1)}});
 $("tipx").onclick=function(){ls("wr_tip_hide",String(Date.now()+7*864e5));$("tip").hidden=true};
-window.addEventListener("resize",function(){var el=$("inp");if(el)fit(el)});
+window.addEventListener("resize",function(){var el=$("inp");if(el)fit(el);fitBrand()});
 render(1);

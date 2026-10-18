@@ -54,3 +54,20 @@ pre{white-space:pre-wrap;word-wrap:break-word;font:inherit;font-size:15px;line-h
 .tip p{margin:0;flex:1}
 .tip button{flex:none;border:0;background:transparent;color:var(--mu);font-size:22px;line-height:1;width:36px;height:36px;padding:0;cursor:pointer;border-radius:10px}
 a.btn{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none}
+/* dormakaba logo (top-left). White chip keeps the blue word mark + red symbol legible on the gradient.
+   header.bc = compact: only the red symbol (set by JS when the full logo would collide, forced below 360px).
+   header.bt/.bt2/.bt3 = slightly smaller title, only when needed to keep it on one line next to the symbol. */
+header{gap:10px}
+.hl{display:flex;align-items:center;gap:10px;min-width:0}
+.hl h1{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.brand{flex:none;display:inline-flex;align-items:center;height:34px;padding:0 10px;background:#fff;border-radius:10px;box-shadow:0 2px 10px rgba(15,23,42,.18)}
+.brand img{display:block}
+.brand .bf{height:14px;width:auto}
+.brand .bm{display:none;width:24px;height:auto}
+header.bc .brand{padding:0 6px}
+header.bc .brand .bf{display:none}
+header.bc .brand .bm{display:block}
+header.bt #title{font-size:22px}
+header.bt2 #title{font-size:19px}
+header.bt3 #title{font-size:17px}
+@media (max-width:359px){header,.hl{gap:6px}header .brand{height:30px;padding:0 5px;border-radius:9px}header .brand .bf{display:none}header .brand .bm{display:block;width:20px}header .seg button{padding:8px 11px}}
