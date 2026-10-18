@@ -34,7 +34,7 @@ function save(){ls("wr_ans",JSON.stringify(S.ans));ls("wr_step",String(S.step))}
 function t(){return T[S.lang||"nl"]}
 function hdr(){var L=S.lang||"nl";$("title").textContent=t().title;document.title=t().title;document.documentElement.lang=L;
  [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.classList.toggle("on",b.dataset.l===S.lang)});
- $("seg").style.visibility=S.lang?"visible":"hidden";updateTip();fitBrand()}
+ $("seg").style.visibility=S.lang?"visible":"hidden";fitBrand()}
 // dormakaba logo: full word mark only when it fits next to the title, else just the red symbol.
 function fitBrand(){var h=document.querySelector("header"),b=h&&h.querySelector(".brand"),t=$("title"),r=$("seg");if(!b||!t||!r)return;
  h.classList.remove("bc","bt","bt2","bt3");t.style.whiteSpace="nowrap";
@@ -42,19 +42,6 @@ function fitBrand(){var h=document.querySelector("header"),b=h&&h.querySelector(
  if(over())h.classList.add("bc");var k=["bt","bt2","bt3"],i=0;for(;i<k.length&&over();i++){if(i)h.classList.remove(k[i-1]);h.classList.add(k[i])}
  if(over()&&/\s/.test(t.textContent))h.classList.remove(k[i-1]); // smaller title only if that keeps it on one line; else wrap as before
  t.style.whiteSpace=""}
-function isStandalone(){if(navigator.standalone===true)return true;
- try{if(window.matchMedia("(display-mode: standalone)").matches)return true}catch(e){}
- return false}
-function iosDevice(){var ua=navigator.userAgent||"";
- if(/iPad|iPhone|iPod/.test(ua))return true;
- return navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1}
-function mobileBrowser(){if(iosDevice())return true;return /Android|webOS|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent||"")}
-function updateTip(){var el=$("tip");if(!el)return;
- var until=+ls("wr_tip_hide")||0,show=!isStandalone()&&mobileBrowser()&&Date.now()>=until;
- el.hidden=!show;if(!show)return;
- var fr=S.lang==="fr",ios=iosDevice();
- $("tiptext").textContent=fr?(ios?"Astuce : ajoutez cette app à votre écran d\u2019accueil via Partager → Sur l\u2019écran d\u2019accueil. Supprimez aussi toutes les anciennes apps Rapport de travail.":"Astuce : ajoutez cette app à votre écran d\u2019accueil via le menu (\u22ee) → Ajouter à l\u2019écran d\u2019accueil. Supprimez aussi toutes les anciennes apps Rapport de travail."):(ios?"Tip: zet deze app op je beginscherm via Deel → Zet op beginscherm. Verwijder ook alle oude Werkrapport-apps.":"Tip: zet deze app op je beginscherm via het menu (\u22ee) → Toevoegen aan startscherm. Verwijder ook alle oude Werkrapport-apps.");
- var x=$("tipx");if(x)x.setAttribute("aria-label",fr?"Fermer":"Sluiten")}
 function anim(dir){var c=$("card");c.classList.remove("slide-in-r","slide-in-l");void c.offsetWidth;c.classList.add(dir<0?"slide-in-l":"slide-in-r")}
 function render(dir){hdr();$("top").innerHTML="";
  if(!S.lang)return startView();
@@ -157,6 +144,6 @@ function complete(){var s=result;
  // Same tap: download first, then clipboard, then leave this page on a blank report and hand off beside it.
  download(s);copyText(s);freshStart();openGo()}
 [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.onclick=function(){if(S.view==="d")S.view="q";S.lang=b.dataset.l;ls("wr_lang",S.lang);render(1)}});
-$("tipx").onclick=function(){ls("wr_tip_hide",String(Date.now()+7*864e5));$("tip").hidden=true};
+ls("wr_tip_hide",null); // clean up the key of the removed home-screen banner
 window.addEventListener("resize",function(){var el=$("inp");if(el)fit(el);fitBrand()});
 render(1);
