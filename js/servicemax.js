@@ -229,6 +229,9 @@ function merge(texts){
   acc=acc.concat(lines.slice(best))}
  return acc.join("\n")}
 
+// After Overnemen the dossier field is the installed product, not the work order.
+function dossierFrom(client){
+ return String(client&&client.product||"").replace(/\s+/g," ").trim()}
 function formatBlock(lang,client){
  var L=LABELS[lang]||LABELS.nl,keys=["wo","account","adres","contact","product"],lines=[],i,v;
  for(i=0;i<keys.length;i++){
@@ -243,6 +246,7 @@ root.ServiceMax={
  lines:linesOf,
  blank:blank,
  formatBlock:formatBlock,
+ dossierFrom:dossierFrom,
  labels:LABELS,
  normWO:normWO,
  normProduct:normProduct};

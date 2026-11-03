@@ -208,7 +208,7 @@ function reviewView(){var L=S.lang||"nl",bi=!S.lang,x=ServiceMax.labels[L],y=Ser
  $("ocrback").onclick=function(){S.view="q";render(-1)};
  $("ocrtake").onclick=function(){grabDraft();var d=S.draft;
   S.client={wo:d.wo.trim(),account:d.account.trim(),adres:d.adres.trim(),contact:d.contact.trim(),product:d.product.trim()};
-  if(S.client.wo)S.ans[0]=S.client.wo.replace(/\s+/g," ").trim();
+  var dossier=ServiceMax.dossierFrom(S.client);if(dossier)S.ans[0]=dossier;
   S.view="q";S.step=0;save();render(1)}}
 [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.onclick=function(){if(S.busy)return;if(S.view==="d")S.view="q";S.lang=b.dataset.l;ls("wr_lang",S.lang);render(1)}});
 var ocrFile=$("ocrfile");
