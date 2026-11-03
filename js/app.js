@@ -149,8 +149,11 @@ function copyText(s){function fb(){var ta=document.createElement("textarea");ta.
   ta.select();ta.setSelectionRange(0,s.length);var ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(ta);return ok}
  if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(s).then(function(){return true},function(){return fb()})}
  return Promise.resolve(fb())}
+function downloadName(){var safe=ServiceMax.fileName(S.ans[0]);
+ if(!safe)return t().file;
+ return /\.txt$/i.test(safe)?safe:safe+".txt"}
 function download(s){var b=new Blob([s.replace(/\n/g,"\r\n")],{type:"text/plain;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
- a.href=u;a.download=t().file;a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u)},8000)}
+ a.href=u;a.download=downloadName();a.style.display="none";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u)},8000)}
 function freshStart(){S.ans=[];for(var i=0;i<N;i++)S.ans[i]="";S.step=0;S.view="q";result="";trCache={};trVals=[];lastFail=false;lastErr="";trRun++;S.client=ServiceMax.blank();S.draft=ServiceMax.blank();save();render(1)}
 function openGo(){var w=null;try{w=window.open(GO,"_blank")}catch(e){w=null}
  if(w)return;
@@ -217,7 +220,7 @@ function reviewView(){var L=S.lang||"nl",bi=!S.lang,x=ServiceMax.labels[L],y=Ser
 var ocrFile=$("ocrfile");
 if(ocrFile)ocrFile.addEventListener("change",function(){var files=[].slice.call(this.files||[]);this.value="";if(files.length)runOcr(files)});
 ls("wr_tip_hide",null); // clean up the key of the removed home-screen banner
-if($("ver"))$("ver").textContent=ServiceMax.version||"v2026.11.03-2";
+if($("ver"))$("ver").textContent=ServiceMax.version||"v2026.11.03-3";
 if("serviceWorker" in navigator){
  try{sessionStorage.removeItem("wr_reloaded")}catch(e){}
  var hadCtrl=!!navigator.serviceWorker.controller;
@@ -225,6 +228,6 @@ if("serviceWorker" in navigator){
   if(!hadCtrl){hadCtrl=true;return}
   try{if(sessionStorage.getItem("wr_reloaded")==="1")return;sessionStorage.setItem("wr_reloaded","1")}catch(e){}
   location.reload()});
- navigator.serviceWorker.register("sw.js?v=2026.11.03-2").catch(function(){})}
+ navigator.serviceWorker.register("sw.js?v=2026.11.03-3").catch(function(){})}
 window.addEventListener("resize",function(){var el=$("inp");if(el)fit(el);fitBrand()});
 render(1);

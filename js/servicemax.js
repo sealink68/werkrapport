@@ -229,7 +229,15 @@ function merge(texts){
   acc=acc.concat(lines.slice(best))}
  return acc.join("\n")}
 
-var VERSION="v2026.11.03-2";
+var VERSION="v2026.11.03-3";
+// Filename / URL-name only. The form, report and clipboard keep the original text.
+function fileName(value){
+ var s=String(value==null?"":value);
+ s=s.replace(/[\u0000-\u001f\u007f]/g,"_");
+ s=s.replace(/[|\\/:*?"<>]/g,"_");
+ s=s.replace(/_+/g,"_");
+ s=s.replace(/^[\s._]+|[\s._]+$/g,"");
+ return s}
 function isWorkOrder(s){
  return /^WO-(?:TEST\d{3,8}|\d{8})$/i.test(String(s||"").replace(/\s+/g,"").trim())}
 // Question 1 is the installed product. A bare work-order number is never a dossier value.
@@ -259,6 +267,7 @@ root.ServiceMax={
  blank:blank,
  formatBlock:formatBlock,
  dossierFrom:dossierFrom,
+ fileName:fileName,
  q1OnLoad:q1OnLoad,
  isWorkOrder:isWorkOrder,
  version:VERSION,

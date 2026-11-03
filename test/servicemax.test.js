@@ -122,10 +122,22 @@ assert.strictEqual(SM.q1OnLoad("WO-TEST0008",{wo:"WO-TEST0008",product:"IP-00000
 assert.strictEqual(SM.q1OnLoad("WO-TEST0008",{wo:"WO-TEST0008",product:""}),"");
 assert.strictEqual(SM.q1OnLoad("",{wo:"WO-TEST0008",product:"IP-00000008|TESTDEUR"}),"IP-00000008|TESTDEUR");
 assert.strictEqual(SM.q1OnLoad("handmatig dossier",{wo:"WO-TEST0008",product:"IP-00000008|TESTDEUR"}),"handmatig dossier");
-assert.strictEqual(SM.version,"v2026.11.03-2");
+var rawName="IP-TEST0001|TESTDEUR FTS-E02";
+assert.strictEqual(SM.fileName(rawName),"IP-TEST0001_TESTDEUR FTS-E02");
+assert.strictEqual(rawName,"IP-TEST0001|TESTDEUR FTS-E02");
+assert.strictEqual(SM.fileName("a/b\\c:d*e?f\"g<h>i"),"a_b_c_d_e_f_g_h_i");
+assert.strictEqual(SM.fileName("a||b"),"a_b");
+assert.strictEqual(SM.fileName("  foo.. \n"),"foo");
+assert.strictEqual(SM.fileName("end. "),"end");
+assert.strictEqual(SM.fileName("a\u0001b"),"a_b");
+assert.strictEqual(SM.fileName("___"),"");
+assert.ok(SM.fileName(rawName).indexOf("|")<0);
+assert.ok(block.indexOf("IP-00000001|TESTDEUR FTS-E02")>=0,"report text keeps the pipe");
+assert.strictEqual(SM.version,"v2026.11.03-3");
 ["index.html","sw.js","js/app.js","js/servicemax.js"].forEach(function(f){
  var src=fs.readFileSync(path.join(__dirname,"..",f),"utf8");
- assert.ok(src.indexOf("v2026.11.03-2")>=0,f+" missing version");
+ assert.ok(src.indexOf("v2026.11.03-3")>=0,f+" missing version");
+ assert.ok(src.indexOf("v2026.11.03-2")<0,f+" still on old version");
 });
 var sw=fs.readFileSync(path.join(__dirname,"..","sw.js"),"utf8");
 assert.ok(sw.indexOf("skipWaiting")>=0);
