@@ -67,3 +67,15 @@ header.bt #title{font-size:22px}
 header.bt2 #title{font-size:19px}
 header.bt3 #title{font-size:17px}
 @media (max-width:359px){header,.hl{gap:6px}header .brand{height:30px;padding:0 5px;border-radius:9px}header .brand .bf{display:none}header .brand .bm{display:block;width:20px}header .seg button{padding:8px 11px}}
+.scan{background:#fff;color:var(--a);border:2px solid #e0e7ff;box-shadow:none}
+.scan small{color:var(--mu)}
+.scan-hint{margin:0 0 14px}
+.fields label{display:block;font-size:13px;font-weight:700;color:var(--mu);margin:12px 0 0}
+.fields label small{display:block;font-weight:500;color:#94a3b8}
+.fields input,.fields textarea{margin-top:6px}
+.btns.stack{flex-direction:column}
+.btns.stack .btn{width:100%}
+.ocrbar{height:8px;background:#e2e8f0;border-radius:8px;overflow:hidden;margin:12px 0}
+.ocrbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b));transition:width .2s linear}
+.oknote{color:#047857;font-weight:600;margin:0 0 14px}
+.filepick{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
