@@ -229,9 +229,21 @@ function merge(texts){
   acc=acc.concat(lines.slice(best))}
  return acc.join("\n")}
 
-// After Overnemen the dossier field is the installed product, not the work order.
+var VERSION="v2026.11.03-2";
+function isWorkOrder(s){
+ return /^WO-(?:TEST\d{3,8}|\d{8})$/i.test(String(s||"").replace(/\s+/g,"").trim())}
+// Question 1 is the installed product. A bare work-order number is never a dossier value.
 function dossierFrom(client){
- return String(client&&client.product||"").replace(/\s+/g," ").trim()}
+ var p=String(client&&client.product||"").replace(/\s+/g," ").trim();
+ if(!p||isWorkOrder(p)) return "";
+ return p}
+// Restore: a stored WO (from the previous auto-fill) yields the product, or stays empty.
+// A hand-typed value that is not a work order is kept.
+function q1OnLoad(stored,client){
+ var cur=String(stored||"").replace(/\s+/g," ").trim();
+ var product=dossierFrom(client);
+ if(isWorkOrder(cur)||!cur) return product;
+ return cur}
 function formatBlock(lang,client){
  var L=LABELS[lang]||LABELS.nl,keys=["wo","account","adres","contact","product"],lines=[],i,v;
  for(i=0;i<keys.length;i++){
@@ -247,6 +259,9 @@ root.ServiceMax={
  blank:blank,
  formatBlock:formatBlock,
  dossierFrom:dossierFrom,
+ q1OnLoad:q1OnLoad,
+ isWorkOrder:isWorkOrder,
+ version:VERSION,
  labels:LABELS,
  normWO:normWO,
  normProduct:normProduct};

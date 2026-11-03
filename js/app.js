@@ -29,10 +29,13 @@ for(var i=0;i<N;i++)if(typeof S.ans[i]!=="string")S.ans[i]="";
 if(!(S.step>=0&&S.step<N))S.step=0;
 try{var savedC=JSON.parse(ls("wr_client")||"null");
  if(savedC&&typeof savedC==="object")["wo","account","adres","contact","product"].forEach(function(k){if(typeof savedC[k]==="string")S.client[k]=savedC[k].slice(0,400)})}catch(e){}
+var prevQ1=S.ans[0];
+S.ans[0]=ServiceMax.q1OnLoad(prevQ1,S.client);
 var trCache={},result="",lastFail=false,copied=true,lastErr="",trVals=[];
 var $=function(id){return document.getElementById(id)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function save(){ls("wr_ans",JSON.stringify(S.ans));ls("wr_step",String(S.step));ls("wr_client",JSON.stringify(S.client))}
+if(S.ans[0]!==prevQ1)save();
 function hasClient(){var c=S.client||{};return ["wo","account","adres","contact","product"].some(function(k){return String(c[k]||"").trim()})}
 function grabDraft(){if(!$("f-wo"))return;var d=ServiceMax.blank();
  ["wo","account","adres","contact","product"].forEach(function(k){var el=$("f-"+k);if(el)d[k]=el.value});S.draft=d}
@@ -208,11 +211,20 @@ function reviewView(){var L=S.lang||"nl",bi=!S.lang,x=ServiceMax.labels[L],y=Ser
  $("ocrback").onclick=function(){S.view="q";render(-1)};
  $("ocrtake").onclick=function(){grabDraft();var d=S.draft;
   S.client={wo:d.wo.trim(),account:d.account.trim(),adres:d.adres.trim(),contact:d.contact.trim(),product:d.product.trim()};
-  var dossier=ServiceMax.dossierFrom(S.client);if(dossier)S.ans[0]=dossier;
+  S.ans[0]=ServiceMax.dossierFrom(S.client);
   S.view="q";S.step=0;save();render(1)}}
 [].forEach.call(document.querySelectorAll("#seg button"),function(b){b.onclick=function(){if(S.busy)return;if(S.view==="d")S.view="q";S.lang=b.dataset.l;ls("wr_lang",S.lang);render(1)}});
 var ocrFile=$("ocrfile");
 if(ocrFile)ocrFile.addEventListener("change",function(){var files=[].slice.call(this.files||[]);this.value="";if(files.length)runOcr(files)});
 ls("wr_tip_hide",null); // clean up the key of the removed home-screen banner
+if($("ver"))$("ver").textContent=ServiceMax.version||"v2026.11.03-2";
+if("serviceWorker" in navigator){
+ try{sessionStorage.removeItem("wr_reloaded")}catch(e){}
+ var hadCtrl=!!navigator.serviceWorker.controller;
+ navigator.serviceWorker.addEventListener("controllerchange",function(){
+  if(!hadCtrl){hadCtrl=true;return}
+  try{if(sessionStorage.getItem("wr_reloaded")==="1")return;sessionStorage.setItem("wr_reloaded","1")}catch(e){}
+  location.reload()});
+ navigator.serviceWorker.register("sw.js?v=2026.11.03-2").catch(function(){})}
 window.addEventListener("resize",function(){var el=$("inp");if(el)fit(el);fitBrand()});
 render(1);
