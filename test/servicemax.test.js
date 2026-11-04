@@ -125,19 +125,23 @@ assert.strictEqual(SM.q1OnLoad("handmatig dossier",{wo:"WO-TEST0008",product:"IP
 var rawName="IP-TEST0001|TESTDEUR FTS-E02";
 assert.strictEqual(SM.fileName(rawName),"IP-TEST0001_TESTDEUR FTS-E02");
 assert.strictEqual(rawName,"IP-TEST0001|TESTDEUR FTS-E02");
+var typed="  dossier\\naam/met:ster*vraag?\"kleiner<groter>pijp|einde. ";
+assert.strictEqual(SM.fileName(typed),"_dossier_naam_met_ster_vraag_kleiner_groter_pijp_einde_");
+assert.strictEqual(typed,"  dossier\\naam/met:ster*vraag?\"kleiner<groter>pijp|einde. ");
 assert.strictEqual(SM.fileName("a/b\\c:d*e?f\"g<h>i"),"a_b_c_d_e_f_g_h_i");
 assert.strictEqual(SM.fileName("a||b"),"a_b");
-assert.strictEqual(SM.fileName("  foo.. \n"),"foo");
-assert.strictEqual(SM.fileName("end. "),"end");
+assert.strictEqual(SM.fileName("  foo.. \n"),"_foo_");
+assert.strictEqual(SM.fileName("end. "),"end_");
 assert.strictEqual(SM.fileName("a\u0001b"),"a_b");
 assert.strictEqual(SM.fileName("___"),"");
 assert.ok(SM.fileName(rawName).indexOf("|")<0);
+assert.ok(!/[\\/:*?"<>|]/.test(SM.fileName(typed)));
 assert.ok(block.indexOf("IP-00000001|TESTDEUR FTS-E02")>=0,"report text keeps the pipe");
-assert.strictEqual(SM.version,"v2026.11.03-3");
+assert.strictEqual(SM.version,"v2026.11.04-1");
 ["index.html","sw.js","js/app.js","js/servicemax.js"].forEach(function(f){
  var src=fs.readFileSync(path.join(__dirname,"..",f),"utf8");
- assert.ok(src.indexOf("v2026.11.03-3")>=0,f+" missing version");
- assert.ok(src.indexOf("v2026.11.03-2")<0,f+" still on old version");
+ assert.ok(src.indexOf("v2026.11.04-1")>=0,f+" missing version");
+ assert.ok(src.indexOf("v2026.11.03-3")<0,f+" still on old version");
 });
 var sw=fs.readFileSync(path.join(__dirname,"..","sw.js"),"utf8");
 assert.ok(sw.indexOf("skipWaiting")>=0);

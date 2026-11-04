@@ -229,14 +229,16 @@ function merge(texts){
   acc=acc.concat(lines.slice(best))}
  return acc.join("\n")}
 
-var VERSION="v2026.11.03-3";
-// Filename / URL-name only. The form, report and clipboard keep the original text.
+var VERSION="v2026.11.04-1";
+// Filename only. Typed dossier text and a screenshot value both go through here.
+// The form, report and clipboard keep the original characters.
 function fileName(value){
  var s=String(value==null?"":value);
+ s=s.replace(/^[\s.]+|[\s.]+$/g,function(m){return m.replace(/./g,"_")});
  s=s.replace(/[\u0000-\u001f\u007f]/g,"_");
- s=s.replace(/[|\\/:*?"<>]/g,"_");
+ s=s.replace(/[\\/:*?"<>|]/g,"_");
  s=s.replace(/_+/g,"_");
- s=s.replace(/^[\s._]+|[\s._]+$/g,"");
+ if(!s||s==="_") return "";
  return s}
 function isWorkOrder(s){
  return /^WO-(?:TEST\d{3,8}|\d{8})$/i.test(String(s||"").replace(/\s+/g,"").trim())}

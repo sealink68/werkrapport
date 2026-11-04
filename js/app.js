@@ -220,7 +220,7 @@ function reviewView(){var L=S.lang||"nl",bi=!S.lang,x=ServiceMax.labels[L],y=Ser
 var ocrFile=$("ocrfile");
 if(ocrFile)ocrFile.addEventListener("change",function(){var files=[].slice.call(this.files||[]);this.value="";if(files.length)runOcr(files)});
 ls("wr_tip_hide",null); // clean up the key of the removed home-screen banner
-if($("ver"))$("ver").textContent=ServiceMax.version||"v2026.11.03-3";
+if($("ver"))$("ver").textContent=ServiceMax.version||"v2026.11.04-1";
 if("serviceWorker" in navigator){
  try{sessionStorage.removeItem("wr_reloaded")}catch(e){}
  var hadCtrl=!!navigator.serviceWorker.controller;
@@ -228,6 +228,6 @@ if("serviceWorker" in navigator){
   if(!hadCtrl){hadCtrl=true;return}
   try{if(sessionStorage.getItem("wr_reloaded")==="1")return;sessionStorage.setItem("wr_reloaded","1")}catch(e){}
   location.reload()});
- navigator.serviceWorker.register("sw.js?v=2026.11.03-3").catch(function(){})}
+ navigator.serviceWorker.register("sw.js?v=2026.11.04-1").catch(function(){})}
 window.addEventListener("resize",function(){var el=$("inp");if(el)fit(el);fitBrand()});
 render(1);

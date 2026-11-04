@@ -1,13 +1,13 @@
 "use strict";
 // Bump this together with the ?v= query on index.html and the footer label.
-var VERSION="v2026.11.03-3";
-var CACHE="werkrapport-v2026.11.03-3";
+var VERSION="v2026.11.04-1";
+var CACHE="werkrapport-v2026.11.04-1";
 var SHELL=[
  "./",
  "./index.html",
- "./css/style.css?v=2026.11.03-3",
- "./js/servicemax.js?v=2026.11.03-3",
- "./js/app.js?v=2026.11.03-3",
+ "./css/style.css?v=2026.11.04-1",
+ "./js/servicemax.js?v=2026.11.04-1",
+ "./js/app.js?v=2026.11.04-1",
  "./manifest.webmanifest"
 ];
 self.addEventListener("install",function(e){
